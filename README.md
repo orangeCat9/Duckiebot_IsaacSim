@@ -8,22 +8,15 @@
 ## 📝 프로젝트 개요 (Project Overview)
 
 본 프로젝트는 **NVIDIA Isaac Sim** 가상 환경에서 Duckiebot 로봇 모델을 정밀하게 구현하고, ROS 2 미들웨어를 활용하여 **인지(Perception) - 판단(Decision) - 제어(Control)**의 전체 파이프라인을 독자적으로 개발하는 것을 목표로 합니다.
-단순한 주행을 넘어, 물리 엔진 튜닝, 영상 데이터 압축 전송, 상태 기반 자율주행 알고리즘(FSM) 등 실제 로봇 개발 과정에서 마주하는 엔지니어링 이슈들을 해결하는 데 중점을 두었습니다.
+
 
 # 🦆 Duckiebot Autonomous Driving in Isaac Sim
 
 ## 1. 📝 프로젝트 개요 (Project Overview)
 
-본 프로젝트는 **NVIDIA Isaac Sim** 가상 환경에서 Duckiebot 로봇 모델을 구현하고, **ROS 2 Humble**을 기반으로 **지능형 자율주행 시스템**을 구축하는 것을 목표로 합니다.
+본 프로젝트는 **NVIDIA Isaac Sim** 가상 환경에서 Duckiebot 로봇 모델을 구현하고,**ROS 2 Humble**을 기반으로 **지능형 자율주행 시스템**을 구축하는 것을 목표로 합니다.
 
-단순한 주행 시뮬레이션을 넘어, 실제 하드웨어 개발 과정에서 발생할 수 있는 네트워크 대역폭 문제와 물리 엔진 이슈를 해결하는 데 중점을 두었습니다. 로봇은 카메라 영상을 통해 빨간색 큐브(Red Cube)를 인식하여 추적하며, 목표물이 시야에서 사라질 경우 능동적으로 주변을 탐색(Active Search)하는 알고리즘을 탑재하고 있습니다.
-
-### 💡 주요 기능
-
-- **Perception:** 대용량 Raw 이미지를 JPEG로 압축 전송하여 네트워크 부하 감소 및 HSV 기반 객체 인식.
-- **Decision:** State Machine 기반의 주행 판단 (Tracking Mode ↔ Search Mode 자동 전환).
-- **Control:** 차동 구동(Differential Drive) 역운동학(Inverse Kinematics)을 적용한 정밀 모터 제어.
-- **Simulation:** 무게 중심(CoM) 및 마찰력(Friction) 튜닝을 통한 물리적 주행 안정성 확보.
+본 프로젝트는 ROS 2의 모듈화된 아키텍처를 활용하여 Duckiebot의 제어, 인식, 자율주행 기능을 통합적으로 구현했습니다. LED 제어 서비스와 저수준/고수준 모터 제어를 통해 로봇의 상태 표시 및 정밀 구동이 가능하며, 대역폭 효율화를 위한 이미지 압축 전송 및 실시간 뷰어를 구축했습니다. 핵심 기능인 **영상 기반 자율주행**은 HSV 필터링으로 '빨간색 큐브'의 중심 좌표(Centroid)를 분석하여 P-제어 기반의 추적 주행을 수행하며, 목표물이 시야에서 사라질 경우 제자리에서 회전하며 대상을 재탐색하는 능동형 탐색(Active Search) 알고리즘을 탑재하여 주행 안정성을 확보했습니다.
 
 ---
 
