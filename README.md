@@ -1,13 +1,71 @@
-🦆 Duckiebot Autonomous Driving Simulation in Isaac SimIntelligent Autonomous Robot (Duckiebot) Project in NVIDIA Isaac SimAn integrated autonomous driving system based on ROS 2, utilizing control theory, sensor processing, and computer vision (OpenCV) to implement color-based recognition and autonomous navigation.📝 Project OverviewThis project aims to precisely implement the Duckiebot robot model within the NVIDIA Isaac Sim virtual environment and independently develop a full Perception - Decision - Control pipeline using ROS 2 Humble.By leveraging the modular architecture of ROS 2, we have integrated the Duckiebot's control, recognition, and autonomous driving functions. The system includes an LED control service, low-level/high-level motor control for precise movement, and bandwidth-efficient image compression with a real-time viewer.The core feature, Vision-based Autonomous Driving, utilizes HSV filtering to analyze the centroid of a "Red Cube." It performs tracking using P-control and features an Active Search algorithm that rotates the robot in place to reacquire the target if it disappears from the field of view, ensuring driving stability.2. 📂 Directory StructureBash~/duck_ws/src
+# 🦆 Duckiebot Autonomous Driving Simulation in Isaac Sim
+
+> Intelligent Autonomous Robot (Duckiebot) Project in NVIDIA Isaac Sim
+> 
+> 
+> An integrated autonomous driving system based on **ROS 2**, utilizing control theory, sensor processing, and computer vision (OpenCV) to implement color-based recognition and autonomous navigation.
+> 
+
+---
+
+## 📝 Project Overview
+
+This project aims to precisely implement the Duckiebot robot model within the **NVIDIA Isaac Sim** virtual environment and independently develop a full **Perception - Decision - Control** pipeline using **ROS 2 Humble**.
+
+By leveraging the modular architecture of ROS 2, we have integrated the Duckiebot's control, recognition, and autonomous driving functions. The system includes an LED control service, low-level/high-level motor control for precise movement, and bandwidth-efficient image compression with a real-time viewer.
+
+The core feature, **Vision-based Autonomous Driving**, utilizes HSV filtering to analyze the centroid of a "Red Cube." It performs tracking using P-control and features an **Active Search** algorithm that rotates the robot in place to reacquire the target if it disappears from the field of view, ensuring driving stability.
+
+---
+
+## 2. 📂 Directory Structure
+
+```jsx
+~/duck_ws/src
 ├── duckie_chase       # [Decision] Autonomous driving judgment & tracking algorithms
 ├── duckie_control     # [Control] Motor control & Inverse Kinematics driver
 ├── duckie_vision      # [Perception] Image compression & Custom viewer
 ├── duckie_led         # [Utility] LED control service
 └── duckie_low_level   # [Debug] Direct hardware control testing
-3. 💻 EnvironmentThis project was developed and tested in the following environment. Using the same versions is recommended for compatibility.ComponentVersionNoteOSUbuntu 22.04 LTSMiddlewareROS 2 HumbleSimulatorNVIDIA Isaac Sim4.5.0LanguagePython3.10.12LibraryNumPy< 2.0 (1.26.x recommended)⚠️ Warning: The cv_bridge package in ROS 2 Humble is built against NumPy 1.x. If NumPy 2.x is installed, compatibility errors will occur. You must downgrade NumPy as shown below.4. 🚀 Installation & UsageStep 1. Install Essential Libraries (Important)Adjust the NumPy version for ROS 2 compatibility.Bash# Uninstall latest NumPy and install version < 2.0
+```
+
+---
+
+## 3. 💻 Environment
+
+This project was developed and tested in the following environment. Using the same versions is recommended for compatibility.
+
+| **Component** | **Version** | **Note** |
+| --- | --- | --- |
+| **OS** | Ubuntu 22.04 LTS |  |
+| **Middleware** | ROS 2 Humble |  |
+| **Simulator** | NVIDIA Isaac Sim | **4.5.0** |
+| **Language** | Python | 3.10.12 |
+| **Library** | NumPy | **< 2.0** (1.26.x recommended) |
+
+> ⚠️ Warning: The cv_bridge package in ROS 2 Humble is built against NumPy 1.x. If NumPy 2.x is installed, compatibility errors will occur. You must downgrade NumPy as shown below.
+> 
+
+---
+
+## 4. 🚀 Installation & Usage
+
+### Step 1. Install Essential Libraries (Important)
+
+Adjust the NumPy version for ROS 2 compatibility.
+
+```jsx
+# Uninstall latest NumPy and install version < 2.0
 pip3 uninstall numpy
 pip3 install "numpy<2.0"
-Step 2. Build WorkspaceDownload and build the project.Bash# Move to workspace (Modify path according to your environment)
+```
+
+### Step 2. Build Workspace
+
+Download and build the project.
+
+```jsx
+# Move to workspace (Modify path according to your environment)
 cd ~/duck_ws
 
 # Build packages
@@ -15,12 +73,40 @@ colcon build --symlink-install
 
 # Source the environment
 source install/setup.bash
-Step 3. Launch Isaac SimLaunch Isaac Sim 4.5.0.Load the configured Duckiebot stage (USD file) and press the Play button.Ensure the ROS 2 Bridge is active.Step 4. Run ROS 2 NodesOpen a new terminal for each command below and run them in order.(Note: Always run source install/setup.bash before executing commands).1. duckie_led (Change LED Color)A package to change the color of the LEDs attached to the Duckiebot in Isaac Sim via ROS 2 Service.Bash# Terminal 1
+```
+
+### Step 3. Launch Isaac Sim
+
+1. Launch **Isaac Sim 4.5.0**.
+2. Load the configured Duckiebot stage (USD file) and press the **Play** button.
+    - *Ensure the ROS 2 Bridge is active.*
+
+### Step 4. Run ROS 2 Nodes
+
+Open a new terminal for each command below and run them in order.
+
+(Note: Always run source install/setup.bash before executing commands).
+
+### 1. duckie_led (Change LED Color)
+
+> A package to change the color of the LEDs attached to the Duckiebot in Isaac Sim via ROS 2 Service.
+> 
+
+```jsx
+# Terminal 1
 ros2 run duckie_led led_server.py
 
 # Terminal 2
 ros2 service call /duckie_led_control duckie_led/srv/SetColor "color: 'blue'"
-2. duckie_low_level (Low-level Control)Receives movement commands (Twist), converts them into wheel rotation speeds, and sends them to the simulator.Bash# Terminal 1
+```
+
+### 2. duckie_low_level (Low-level Control)
+
+> Receives movement commands (Twist), converts them into wheel rotation speeds, and sends them to the simulator.
+> 
+
+```jsx
+# Terminal 1
 ros2 run duckie_low_level raw_wheel_operator.py
 
 # Terminal 2
@@ -28,12 +114,28 @@ ros2 topic echo /duckie/wheel_left_cmd
 
 # Terminal 3
 ros2 topic echo /duckie/wheel_right_cmd
-3. duckie_control (High-level Control - Teleop)Uses the motor driver to control the robot via keyboard commands.Bash# Terminal 1
+```
+
+### 3. duckie_control (High-level Control - Teleop)
+
+> Uses the motor driver to control the robot via keyboard commands.
+> 
+
+```jsx
+# Terminal 1
 ros2 run duckie_control motor_driver.py 
 
 # Terminal 2
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/duckie/cmd_vel
-4. duckie_vision (Camera Signal Acquisition & Publish)Publishes the image_raw topic and enables the use of compressed images.Bash# Terminal 1
+```
+
+### 4. duckie_vision (Camera Signal Acquisition & Publish)
+
+> Publishes the image_raw topic and enables the use of compressed images.
+> 
+
+```jsx
+# Terminal 1
 ros2 run duckie_vision image_compressor
 
 # Terminal 2
@@ -42,7 +144,18 @@ ros2 run duckie_vision simple_viewer
 
 # Terminal 3 - View image_raw via rqt
 ros2 run rqt_image_view rqt_image_view
-5. duckie_chase (Image Processing & Autonomous Control)Analyzes video to detect a cube and issues driving commands.Displays the Centroid and Bounding Box.Logic: Left turn if the cube is left of center, Right turn if right of center, Go straight if centered.Active Search: If the cube is not visible, the robot rotates in place until the target is identified.Bash# Terminal 1
+```
+
+### 5. duckie_chase (Image Processing & Autonomous Control)
+
+> Analyzes video to detect a cube and issues driving commands.
+> 
+> - Displays the **Centroid** and **Bounding Box**.
+> - **Logic:** Left turn if the cube is left of center, Right turn if right of center, Go straight if centered.
+> - **Active Search:** If the cube is not visible, the robot rotates in place until the target is identified.
+
+```jsx
+# Terminal 1
 ros2 run duckie_vision image_compressor
 
 # Terminal 2
@@ -50,7 +163,7 @@ python3 ~/duck_ws/src/duckie_vision/duckie_vision/simple_viewer.py
 
 # Terminal 3 (Window opens showing the detection)
 ros2 run duckie_chase detection_node
-
+```
 
 
 # 🦆 Duckiebot Autonomous Driving Simulation in Isaac Sim
